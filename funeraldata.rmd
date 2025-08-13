@@ -1,0 +1,314 @@
+---
+title: "Mortality Investigation Report"
+author: "Moffat Kagiri"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+# Introduction
+This is an exercise to study mortality investigation. It is executed in R, validated against the answers provided in the worked example, and documented in the actuarial work repository on github. The goal is to:
+\item Calculate crude and graduated mortality rates
+\item Compare actual vs expected experience
+\item Provide diagnostic plots
+\item Document the process as a reliable reference point in future
+
+```{r setup, include=FALSE}
+## Set echo to true to see code feedback
+knitr::opts_chunk$set(echo = TRUE)
+rm(list = ls(all.names = TRUE))
+
+## Load and attach packages
+require(tidyverse)
+require(dplyr)
+require(lubridate)
+require(readr)
+require(ggplot2)
+require(demography)
+require(stats)
+
+```
+
+# Data Preparation
+
+The data is availed as a .csv file named FuneralData.csv
+Let's do an exploratory analysis. 
+
+```{r}
+main <- read.csv("C:/Users/moffat.kagiri/models/mortality investigation/FuneralData.csv", header = TRUE)
+head(main)
+summary(main)
+
+``` 
+Start date t_0 = 2013.00 and end date t_4 $\approx$ 2018. Therefore, we can define age relative to each year in the study, for each life. 
+
+```{r}
+# Define the start and end dates as per the format in the data
+t_0 <- round(decimal_date(ymd("2013-01-01")), 4)
+t_5 <- 2017.999 #round(decimal_date(ymd("2017-12-31")), 4)
+print(c(t_0, t_5))
+
+```
+# Exact Central Exposed to Risk
+
+The three dates whose maximum determines the date at which exposure at age 70 begins are:
+
+- The date of reaching age label 70
+- The date of entry
+- The start of the investigation
+
+The three dates whose minimum determines the date at which exposure at age 70 ends are:
+- The date of reaching age label 71
+- The date of exit (for any reason)
+- The end of the investigation
+
+To determine the exact central exposed to risk for age 70 last birthday, the block below manually determines the exposure as the duration during which lives under observation  have age label 70. This is the intersection of the interval between a life's 70th and 71st birthdays, and the period of the investigation. This is calculated for every life and then added up to show the total exposure as needed. 
+
+An important takeaway in this exercise was to avoid the use of ifelse with date time formats. This loop strips the Date/POSIXct attributes as well as the interval class attributes, making the entire exercise overly frustrating. 
+
+```{r}
+# Determine exact central exposed to risk for age 70 last birthday. 
+# Define 70th and 71st birthdays
+exact <- main[1:4]
+exact$birthday_70 <- date_decimal(main$BIRTH) + years(70)
+exact$birthday_71 <- date_decimal(main$BIRTH) + years(71)
+
+# Define other dates
+exact$entry_date <- date_decimal(main$ENTRY)
+exact$start_date <- date_decimal(t_0) 
+
+# Replace NA in DEATH with t_5, keeping Date format
+exact$exit_date <- as.Date(NA)  # Initialize as Date
+exact$exit_date <- if_else(
+  is.na(main$DEATH),
+  date_decimal(t_5),           # Use study end date 
+  date_decimal(main$DEATH)     # Keep original death date
+)
+
+exact$end_date <- date_decimal(t_5)
+
+# Calculate exposure using proper date-preserving methods
+exact <- exact %>%
+  mutate(
+    # Step 1: Define exposure windows (already correct)
+    exposure_start = pmax(birthday_70, entry_date, start_date),
+    exposure_end = pmin(birthday_71, exit_date, end_date),
+    
+    # Step 2: Compute exposure time safely
+    EXPOSURE_AGE70 = case_when(
+      exposure_start >= exposure_end ~ 0,  # No overlap
+      TRUE ~ round(time_length(interval(exposure_start, exposure_end), "years"), 4)
+    )
+  )
+
+# Sum exposure (now numeric, not interval)
+total_E70 <- round(sum(exact$EXPOSURE_AGE70, na.rm = TRUE), 4)
+print(paste("Total central exposed to risk at age 70:", round(total_E70, 4), "person-years"))
+
+```
+
+Without the date-time conversions, this is an attempt at a more reproducible calculation, factoring out the age parameter as a variable. 
+
+Note to maintain the accuracy indicated in the question. The answer swayed between 70.401 and 70.462 due to rounding off errors. 
+
+```{r}
+# Determine exact central exposed to risk for age 70 last birthday. 
+# Define 70th and 71st birthdays
+
+x <- 70
+exact$birthday_x <- main$BIRTH + x
+exact$birthday_x1 <- main$BIRTH + x + 1
+
+# Define other dates
+exact$entry_date <- main$ENTRY
+exact$start_date <- t_0 
+
+# Replace NA in DEATH with t_5, keeping Date format
+exact$exit_date <- NA  # Initialize as Date
+exact$exit_date <- if_else(
+  is.na(main$DEATH),
+  t_5,           # Use study end date 
+  main$DEATH     # Keep original death date
+)
+
+exact$end_date <- t_5
+
+# Step 1: Define exposure windows (already correct)
+exact$exposure_start <- pmax(exact$birthday_x, exact$entry_date, exact$start_date)
+exact$exposure_end <- pmin(exact$birthday_x1, exact$exit_date, exact$end_date)
+
+# Step 2: Compute exposure time safely
+exact$EXPOSURE_AGEX <- case_when(
+  exact$exposure_start >= exact$exposure_end ~ 0,  # No overlap
+  TRUE ~  round(exact$exposure_end - exact$exposure_start, 6))
+
+# Sum exposure (now numeric, not interval)
+total_EX <- sum(exact$EXPOSURE_AGEX, na.rm = TRUE)
+print(paste("Total central exposed to risk at age 70:", round(total_EX, 4), "person-years"))
+
+```
+The solution provided in the worked example is: 
+
+```{r eval=FALSE, include=FALSE}
+etrfn<-function(x) {
+d0=2013.000 #start of investigation;
+d1=x[[2]] #date of birth;
+d70=d1+70 #70th birthday;
+d2=x[[3]] #date of entry;
+
+startdate=max(d70,d2,d0);
+
+d99=2017.999 #end of investigation;
+d71=d1+71 #71st birthday;
+d3=x[[4]] #date of death;
+d4=ifelse(is.na(d3),d99,d3) #Replace NA’s with end of investigation date;
+
+enddate=min(d71,d4,d99);
+
+enddate2=max(enddate,startdate) #Check enddate is not before
+
+startdate;
+enddate2-startdate }
+etr70=sum(apply(data,1,etrfn))
+etr70
+```
+
+# Determining $P_x$ 
+Calculate the number of lives who died at age 70 last birthday during the investigation period.
+The data includes dates of death, enabling us to determine the lives who died. From the dates of death, we can determine the age last birthday for each life at the point of death during the study.  
+
+
+```{r}
+# Number of lives who died during observation
+deaths <- main[!is.na(main$DEATH) &
+                 main$DEATH >= 2013.000 &
+                 main$DEATH <= 2017.999, 1:4]
+summary(deaths)
+
+# Determine age last birthday at death
+deaths$AGE <- floor(deaths$DEATH - deaths$BIRTH)
+
+# Number of lives who died at age 70 last birthday is:
+num = sum(deaths$AGE == 70)
+
+print(num)
+
+```
+
+
+# Force of mortality
+
+Force of mortality at age 70 is given by: 
+```{r}
+mu_x = num/total_EX
+print(mu_x)
+
+```
+
+
+## Number of lives aged 70 last birthday 
+To determine the number of lives aged 70 whose policies were in force at the start of the investigation period, we check age last birthday at the start of the investigation period. 
+
+Filter for:
+ 1. Either still alive (NA in DEATH) OR died after investigation start (DEATH >= t_0)
+ 2. AND was age 70 last birthday at ENTRY
+ 3. AND ENTRY was before/at investigation start (t_0)
+
+```{r}
+# Define age last-birthday at the start of the investigation
+agetest <- floor(t_0 - main$BIRTH)
+p_70_start <- main[agetest == 70 &
+                     main$ENTRY < t_0 &
+                     (is.na(main$DEATH) | main$DEATH > t_0), 1:4]
+
+```
+
+Determine the corresponding figures for 1 January in years 2014, 2015, 2016,
+2017 and 2018.
+For this, we replicate the code above to regenerate the same figure for different years. 
+
+```{r}
+# Replicating to get the same figure for years from 2013 to 2018
+
+p_70 <- function(date_0){
+  agex <- floor(date_0 - main$BIRTH)
+  lives <- main[
+    (is.na(main$DEATH) | main$DEATH > date_0) & 
+      agex == 70 &
+      main$ENTRY <= date_0,
+             1:4
+  ]
+  return(nrow(lives))
+}
+
+
+# Create a vector of start dates for each year
+year_starts <- decimal_date(ymd(paste0(2013:2018, "-01-01")))
+
+# Calculate and store results
+results <- sapply(year_starts, p_70)
+
+# Print the results
+print("The number of lives aged 70 whose policies were in force at the beginning of each year are:")
+for (i in 1:length(results)) {
+  print(paste(year(ymd(paste0(2012+i, "-01-01"))), ":", results[i]))
+}
+
+
+```
+# Census Approach to Find Central Exposed to Risk
+Estimate the central exposed to risk for age 70 last birthday for the investigation period using a census approach.
+For a population observed between time \(t_1\) and \(t_2\):
+
+$$ E^c_x = \int_{t_1}^{t_2} P_x(t) \, dt $$
+where:
+
+$P_x(t)$ = Number of lives aged $x$ at time $t$
+
+Integrate over the observation period.
+
+In our case, 
+$$ E^c_{70} = \int_{t_0}^{t_5} P_{70}(t) \, dt $$
+Thus
+
+$$ E^c_{70} = \sum_{t=0}^{5} \frac{1}{2}( P_{70}(t)+P_{70}(t+1)) $$
+
+This becomes:
+$$E^c_{70} = \frac 1 2(12+9) + \frac 1 2(9+18) + \frac 1 2(18+14) + \frac 1 2(14+14) +\frac 1 2(14+19)$$
+
+Therefore:
+
+$$ E^c_{70} = 10.5+13.5+16+14+16.5 $$
+And 
+$$E^c_{70} = 70.5 $$
+
+Trying the trapezoid rule in R...
+
+```{r}
+# Calculate central exposed to risk (census trapezoidal rule)
+ce_x <- function(dates, populations) {
+  time_intervals <- as.numeric(diff(dates)/365.25)
+  avg_populations <- (populations[-1] + populations[-length(populations)]) / 2
+  sum(time_intervals * avg_populations)
+}
+
+# Example usage
+c_dates <- as.Date(date_decimal(year_starts))
+populations <- results
+
+```
+We find that: $E^c_{70}$ equals `r ce_x(c_dates, populations)`. 
+
+# Estimated Force of Mortality (census method)
+
+As before, force of mortality is given by:
+$$\mu_x = \frac{d_x}{E^c_x}$$
+
+Which translates to:
+$$\mu_x = \frac{3}{70.5}$$
+
+Therefore:
+$$\mu_x = 0.04255319$$
+

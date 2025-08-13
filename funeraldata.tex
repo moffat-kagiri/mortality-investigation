@@ -1,0 +1,513 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Mortality Investigation Report},
+  pdfauthor={Moffat Kagiri},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Mortality Investigation Report}
+\author{Moffat Kagiri}
+\date{2025-08-13}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}\label{introduction}
+
+This is an exercise to study mortality investigation. It is executed in
+R, validated against the answers provided in the worked example, and
+documented in the actuarial work repository on github. The goal is to:
+
+\item
+
+Calculate crude and graduated mortality rates
+
+\item
+
+Compare actual vs expected experience
+
+\item
+
+Provide diagnostic plots
+
+\item
+
+Document the process as a reliable reference point in future
+
+\section{Data Preparation}\label{data-preparation}
+
+The data is availed as a .csv file named FuneralData.csv Let's do an
+exploratory analysis.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{main }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"C:/Users/moffat.kagiri/models/mortality investigation/FuneralData.csv"}\NormalTok{, }\AttributeTok{header =} \ConstantTok{TRUE}\NormalTok{)}
+\FunctionTok{head}\NormalTok{(main)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   LIFE    BIRTH    ENTRY    DEATH
+## 1    1 1944.089 2014.183 2017.358
+## 2    2 1946.778 2017.050 2017.683
+## 3    3 1946.931 2012.344       NA
+## 4    4 1953.486 2012.322 2016.317
+## 5    5 1967.156 2017.192       NA
+## 6    6 1957.681 2017.025       NA
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(main)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       LIFE            BIRTH          ENTRY          DEATH     
+##  Min.   :   1.0   Min.   :1936   Min.   :2010   Min.   :2011  
+##  1st Qu.: 250.8   1st Qu.:1950   1st Qu.:2012   1st Qu.:2015  
+##  Median : 500.5   Median :1958   Median :2014   Median :2017  
+##  Mean   : 500.5   Mean   :1956   Mean   :2014   Mean   :2016  
+##  3rd Qu.: 750.2   3rd Qu.:1963   3rd Qu.:2016   3rd Qu.:2018  
+##  Max.   :1000.0   Max.   :1968   Max.   :2018   Max.   :2018  
+##                                                 NA's   :847
+\end{verbatim}
+
+\subsection{Optional Block}\label{optional-block}
+
+Start date t\_0 = 2013.00 and end date t\_4 \(\approx\) 2018. Therefore,
+we can define age relative to each year in the study, for each life.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define the start and end dates as per the format in the data}
+\NormalTok{t\_0 }\OtherTok{\textless{}{-}} \FunctionTok{round}\NormalTok{(}\FunctionTok{decimal\_date}\NormalTok{(}\FunctionTok{ymd}\NormalTok{(}\StringTok{"2013{-}01{-}01"}\NormalTok{)), }\DecValTok{4}\NormalTok{)}
+\NormalTok{t\_5 }\OtherTok{\textless{}{-}} \FloatTok{2017.999} \CommentTok{\#round(decimal\_date(ymd("2017{-}12{-}31")), 4)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{c}\NormalTok{(t\_0, t\_5))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2013.000 2017.999
+\end{verbatim}
+
+The three dates whose maximum determines the date at which exposure at
+age 70 begins are:
+
+\item
+
+The date of reaching age label 70
+
+\item
+
+The date of entry
+
+\item
+
+The start of the investigation
+
+The three dates whose minimum determines the date at which exposure at
+age 70 ends are:
+
+\item
+
+The date of reaching age label 71
+
+\item
+
+The date of exit (for any reason)
+
+\item
+
+The end of the investigation
+
+To determine the exact central exposed to risk for age 70 last birthday,
+the block below manually determines the exposure as the duration during
+which lives under observation have age label 70. This is the
+intersection of the interval between a life's 70th and 71st birthdays,
+and the period of the investigation. This is calculated for every life
+and then added up to show the total exposure as needed.
+
+An important takeaway in this exercise was to avoid the use of ifelse
+with date time formats. This loop strips the Date/POSIXct attributes as
+well as the interval class attributes, making the entire exercise overly
+frustrating.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Determine exact central exposed to risk for age 70 last birthday. }
+\CommentTok{\# Define 70th and 71st birthdays}
+\NormalTok{exact }\OtherTok{\textless{}{-}}\NormalTok{ main[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{]}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{birthday\_70 }\OtherTok{\textless{}{-}} \FunctionTok{date\_decimal}\NormalTok{(main}\SpecialCharTok{$}\NormalTok{BIRTH) }\SpecialCharTok{+} \FunctionTok{years}\NormalTok{(}\DecValTok{70}\NormalTok{)}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{birthday\_71 }\OtherTok{\textless{}{-}} \FunctionTok{date\_decimal}\NormalTok{(main}\SpecialCharTok{$}\NormalTok{BIRTH) }\SpecialCharTok{+} \FunctionTok{years}\NormalTok{(}\DecValTok{71}\NormalTok{)}
+
+\CommentTok{\# Define other dates}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{entry\_date }\OtherTok{\textless{}{-}} \FunctionTok{date\_decimal}\NormalTok{(main}\SpecialCharTok{$}\NormalTok{ENTRY)}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{start\_date }\OtherTok{\textless{}{-}} \FunctionTok{date\_decimal}\NormalTok{(t\_0) }
+
+\CommentTok{\# Replace NA in DEATH with t\_5, keeping Date format}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{exit\_date }\OtherTok{\textless{}{-}} \FunctionTok{as.Date}\NormalTok{(}\ConstantTok{NA}\NormalTok{)  }\CommentTok{\# Initialize as Date}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{exit\_date }\OtherTok{\textless{}{-}} \FunctionTok{if\_else}\NormalTok{(}
+  \FunctionTok{is.na}\NormalTok{(main}\SpecialCharTok{$}\NormalTok{DEATH),}
+  \FunctionTok{date\_decimal}\NormalTok{(t\_5),           }\CommentTok{\# Use study end date }
+  \FunctionTok{date\_decimal}\NormalTok{(main}\SpecialCharTok{$}\NormalTok{DEATH)     }\CommentTok{\# Keep original death date}
+\NormalTok{)}
+
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{end\_date }\OtherTok{\textless{}{-}} \FunctionTok{date\_decimal}\NormalTok{(t\_5)}
+
+\CommentTok{\# Calculate exposure using proper date{-}preserving methods}
+\NormalTok{exact }\OtherTok{\textless{}{-}}\NormalTok{ exact }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \CommentTok{\# Step 1: Define exposure windows (already correct)}
+    \AttributeTok{exposure\_start =} \FunctionTok{pmax}\NormalTok{(birthday\_70, entry\_date, start\_date),}
+    \AttributeTok{exposure\_end =} \FunctionTok{pmin}\NormalTok{(birthday\_71, exit\_date, end\_date),}
+    
+    \CommentTok{\# Step 2: Compute exposure time safely}
+    \AttributeTok{EXPOSURE\_AGE70 =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      exposure\_start }\SpecialCharTok{\textgreater{}=}\NormalTok{ exposure\_end }\SpecialCharTok{\textasciitilde{}} \DecValTok{0}\NormalTok{,  }\CommentTok{\# No overlap}
+      \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \FunctionTok{round}\NormalTok{(}\FunctionTok{time\_length}\NormalTok{(}\FunctionTok{interval}\NormalTok{(exposure\_start, exposure\_end), }\StringTok{"years"}\NormalTok{), }\DecValTok{4}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  )}
+
+\CommentTok{\# Sum exposure (now numeric, not interval)}
+\NormalTok{total\_E70 }\OtherTok{\textless{}{-}} \FunctionTok{round}\NormalTok{(}\FunctionTok{sum}\NormalTok{(exact}\SpecialCharTok{$}\NormalTok{EXPOSURE\_AGE70, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\DecValTok{4}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Total central exposed to risk at age 70:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(total\_E70, }\DecValTok{4}\NormalTok{), }\StringTok{"person{-}years"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Total central exposed to risk at age 70: 70.4461 person-years"
+\end{verbatim}
+
+Without the date-time conversions, this is an attempt at a more
+reproducible calculation, factoring out the age parameter as a variable.
+
+Note to maintain the accuracy indicated in the question. The answer
+swayed between 70.401 and 70.462 due to rounding off errors.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Determine exact central exposed to risk for age 70 last birthday. }
+\CommentTok{\# Define 70th and 71st birthdays}
+
+\NormalTok{x }\OtherTok{\textless{}{-}} \DecValTok{70}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{birthday\_x }\OtherTok{\textless{}{-}}\NormalTok{ main}\SpecialCharTok{$}\NormalTok{BIRTH }\SpecialCharTok{+}\NormalTok{ x}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{birthday\_x1 }\OtherTok{\textless{}{-}}\NormalTok{ main}\SpecialCharTok{$}\NormalTok{BIRTH }\SpecialCharTok{+}\NormalTok{ x }\SpecialCharTok{+} \DecValTok{1}
+
+\CommentTok{\# Define other dates}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{entry\_date }\OtherTok{\textless{}{-}}\NormalTok{ main}\SpecialCharTok{$}\NormalTok{ENTRY}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{start\_date }\OtherTok{\textless{}{-}}\NormalTok{ t\_0 }
+
+\CommentTok{\# Replace NA in DEATH with t\_5, keeping Date format}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{exit\_date }\OtherTok{\textless{}{-}} \ConstantTok{NA}  \CommentTok{\# Initialize as Date}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{exit\_date }\OtherTok{\textless{}{-}} \FunctionTok{if\_else}\NormalTok{(}
+  \FunctionTok{is.na}\NormalTok{(main}\SpecialCharTok{$}\NormalTok{DEATH),}
+\NormalTok{  t\_5,           }\CommentTok{\# Use study end date }
+\NormalTok{  main}\SpecialCharTok{$}\NormalTok{DEATH     }\CommentTok{\# Keep original death date}
+\NormalTok{)}
+
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{end\_date }\OtherTok{\textless{}{-}}\NormalTok{ t\_5}
+
+\CommentTok{\# Step 1: Define exposure windows (already correct)}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{exposure\_start }\OtherTok{\textless{}{-}} \FunctionTok{pmax}\NormalTok{(exact}\SpecialCharTok{$}\NormalTok{birthday\_x, exact}\SpecialCharTok{$}\NormalTok{entry\_date, exact}\SpecialCharTok{$}\NormalTok{start\_date)}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{exposure\_end }\OtherTok{\textless{}{-}} \FunctionTok{pmin}\NormalTok{(exact}\SpecialCharTok{$}\NormalTok{birthday\_x1, exact}\SpecialCharTok{$}\NormalTok{exit\_date, exact}\SpecialCharTok{$}\NormalTok{end\_date)}
+
+\CommentTok{\# Step 2: Compute exposure time safely}
+\NormalTok{exact}\SpecialCharTok{$}\NormalTok{EXPOSURE\_AGEX }\OtherTok{\textless{}{-}} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{  exact}\SpecialCharTok{$}\NormalTok{exposure\_start }\SpecialCharTok{\textgreater{}=}\NormalTok{ exact}\SpecialCharTok{$}\NormalTok{exposure\_end }\SpecialCharTok{\textasciitilde{}} \DecValTok{0}\NormalTok{,  }\CommentTok{\# No overlap}
+  \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}  \FunctionTok{round}\NormalTok{(exact}\SpecialCharTok{$}\NormalTok{exposure\_end }\SpecialCharTok{{-}}\NormalTok{ exact}\SpecialCharTok{$}\NormalTok{exposure\_start, }\DecValTok{6}\NormalTok{))}
+
+\CommentTok{\# Sum exposure (now numeric, not interval)}
+\NormalTok{total\_EX }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(exact}\SpecialCharTok{$}\NormalTok{EXPOSURE\_AGEX, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Total central exposed to risk at age 70:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(total\_EX, }\DecValTok{4}\NormalTok{), }\StringTok{"person{-}years"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Total central exposed to risk at age 70: 70.444 person-years"
+\end{verbatim}
+
+The solution provided in the worked example is:
+
+\subsection{Calculate the number of lives who died at age 70 last
+birthday during the investigation
+period.}\label{calculate-the-number-of-lives-who-died-at-age-70-last-birthday-during-the-investigation-period.}
+
+The data includes dates of death, enabling us to determine the lives who
+died. From the dates of death, we can determine the age last birthday
+for each life at the point of death during the study.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Number of lives who died during observation}
+\NormalTok{deaths }\OtherTok{\textless{}{-}}\NormalTok{ main[}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(main}\SpecialCharTok{$}\NormalTok{DEATH) }\SpecialCharTok{\&}
+\NormalTok{                 main}\SpecialCharTok{$}\NormalTok{DEATH }\SpecialCharTok{\textgreater{}=} \FloatTok{2013.000} \SpecialCharTok{\&}
+\NormalTok{                 main}\SpecialCharTok{$}\NormalTok{DEATH }\SpecialCharTok{\textless{}=} \FloatTok{2017.999}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{]}
+\FunctionTok{summary}\NormalTok{(deaths)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       LIFE           BIRTH          ENTRY          DEATH     
+##  Min.   :  1.0   Min.   :1937   Min.   :2010   Min.   :2013  
+##  1st Qu.:227.0   1st Qu.:1945   1st Qu.:2012   1st Qu.:2015  
+##  Median :476.0   Median :1953   Median :2014   Median :2017  
+##  Mean   :482.4   Mean   :1953   Mean   :2014   Mean   :2016  
+##  3rd Qu.:741.0   3rd Qu.:1962   3rd Qu.:2015   3rd Qu.:2017  
+##  Max.   :997.0   Max.   :1966   Max.   :2018   Max.   :2018
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Determine age last birthday at death}
+\NormalTok{deaths}\SpecialCharTok{$}\NormalTok{AGE }\OtherTok{\textless{}{-}} \FunctionTok{floor}\NormalTok{(deaths}\SpecialCharTok{$}\NormalTok{DEATH }\SpecialCharTok{{-}}\NormalTok{ deaths}\SpecialCharTok{$}\NormalTok{BIRTH)}
+
+\CommentTok{\# Number of lives who died at age 70 last birthday is:}
+\NormalTok{num }\OtherTok{=} \FunctionTok{sum}\NormalTok{(deaths}\SpecialCharTok{$}\NormalTok{AGE }\SpecialCharTok{==} \DecValTok{70}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(num)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3
+\end{verbatim}
+
+\section{Force of mortality}\label{force-of-mortality}
+
+Force of mortality at age 70 is given by:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mu\_x }\OtherTok{=}\NormalTok{ num}\SpecialCharTok{/}\NormalTok{total\_EX}
+\FunctionTok{print}\NormalTok{(mu\_x)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.04258702
+\end{verbatim}
+
+\subsection{Number of lives aged 70 last
+birthday}\label{number-of-lives-aged-70-last-birthday}
+
+To determine the number of lives aged 70 whose policies were in force at
+the start of the investigation period, we check age last birthday at the
+start of the investigation period.
+
+Filter for: 1. Either still alive (NA in DEATH) OR died after
+investigation start (DEATH \textgreater= t\_0) 2. AND was age 70 last
+birthday at ENTRY 3. AND ENTRY was before/at investigation start (t\_0)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define age last{-}birthday at the start of the investigation}
+\NormalTok{main}\SpecialCharTok{$}\NormalTok{AGE }\OtherTok{\textless{}{-}} \FunctionTok{floor}\NormalTok{(t\_0 }\SpecialCharTok{{-}}\NormalTok{ main}\SpecialCharTok{$}\NormalTok{BIRTH)}
+\NormalTok{p\_70\_start }\OtherTok{\textless{}{-}}\NormalTok{ main[main}\SpecialCharTok{$}\NormalTok{AGE }\SpecialCharTok{==} \DecValTok{70} \SpecialCharTok{\&}
+\NormalTok{                     main}\SpecialCharTok{$}\NormalTok{ENTRY }\SpecialCharTok{\textless{}}\NormalTok{ t\_0 }\SpecialCharTok{\&}
+\NormalTok{                     (}\FunctionTok{is.na}\NormalTok{(main}\SpecialCharTok{$}\NormalTok{DEATH) }\SpecialCharTok{|}\NormalTok{ main}\SpecialCharTok{$}\NormalTok{DEATH }\SpecialCharTok{\textgreater{}}\NormalTok{ t\_0), }\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+Determine the corresponding figures for 1 January in years 2014, 2015,
+2016, 2017 and 2018. For this, we replicate the code above to regenerate
+the same figure for different years.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Replicating to get the same figure for years from 2013 to 2018}
+
+\NormalTok{p\_70 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(date\_0)\{}
+\NormalTok{  agex }\OtherTok{\textless{}{-}} \FunctionTok{floor}\NormalTok{(date\_0 }\SpecialCharTok{{-}}\NormalTok{ main}\SpecialCharTok{$}\NormalTok{BIRTH)}
+\NormalTok{  lives }\OtherTok{\textless{}{-}}\NormalTok{ main[}
+\NormalTok{    (}\FunctionTok{is.na}\NormalTok{(main}\SpecialCharTok{$}\NormalTok{DEATH) }\SpecialCharTok{|}\NormalTok{ main}\SpecialCharTok{$}\NormalTok{DEATH }\SpecialCharTok{\textgreater{}}\NormalTok{ date\_0) }\SpecialCharTok{\&} 
+\NormalTok{      agex }\SpecialCharTok{==} \DecValTok{70} \SpecialCharTok{\&}
+\NormalTok{      main}\SpecialCharTok{$}\NormalTok{ENTRY }\SpecialCharTok{\textless{}=}\NormalTok{ date\_0,}
+             \DecValTok{1}\SpecialCharTok{:}\DecValTok{4}
+\NormalTok{  ]}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(lives))}
+\NormalTok{\}}
+
+
+\CommentTok{\# Create a vector of start dates for each year}
+\NormalTok{year\_starts }\OtherTok{\textless{}{-}} \FunctionTok{decimal\_date}\NormalTok{(}\FunctionTok{ymd}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\DecValTok{2013}\SpecialCharTok{:}\DecValTok{2018}\NormalTok{, }\StringTok{"{-}01{-}01"}\NormalTok{)))}
+
+\CommentTok{\# Calculate and store results}
+\NormalTok{results }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(year\_starts, p\_70)}
+
+\CommentTok{\# Print the results}
+\FunctionTok{print}\NormalTok{(}\StringTok{"The number of lives aged 70 whose policies were in force at the beginning of each year are:"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "The number of lives aged 70 whose policies were in force at the beginning of each year are:"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(results)) \{}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\FunctionTok{year}\NormalTok{(}\FunctionTok{ymd}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\DecValTok{2012}\SpecialCharTok{+}\NormalTok{i, }\StringTok{"{-}01{-}01"}\NormalTok{))), }\StringTok{":"}\NormalTok{, results[i]))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2013 : 12"
+## [1] "2014 : 9"
+## [1] "2015 : 18"
+## [1] "2016 : 14"
+## [1] "2017 : 14"
+## [1] "2018 : 19"
+\end{verbatim}
+
+\section{Census Approach}\label{census-approach}
+
+Estimate the central exposed to risk for age 70 last birthday for the
+investigation period using a census approach. For a population observed
+between time \(t_1\) and \(t_2\):
+
+\[ E^c_x = \int_{t_1}^{t_2} P_x(t) \, dt \] where:
+
+\(P_x(t)\) = Number of lives aged \(x\) at time \(t\)
+
+Integrate over the observation period.
+
+In our case, \[ E^c_{70} = \int_{t_0}^{t_5} P_{70}(t) \, dt \] Thus
+
+\[ E^c_{70} =\sum_{t=0}^5 \frac 1 2 \left( P_{70}(t)+P_{70}(t+1)) \right \]
+
+This becomes:
+\[E^c_{70} = \frac 1 2(12+9) + \frac 1 2(9+18) + \frac 1 2(18+14) + \frac 1 2(14+14) +\frac 1 2(14+19)\]
+
+Therefore:
+
+\[ E^c_{70} = 10.5+13.5+16+14+16.5 \] And \[E^c_{70} = 70.5 \]
+
+Trying the trapezoid rule in R\ldots{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calculate central exposed to risk (census trapezoidal rule)}
+\NormalTok{ce\_x }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(dates, populations) \{}
+\NormalTok{  time\_intervals }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{diff}\NormalTok{(dates)}\SpecialCharTok{/}\FloatTok{365.25}\NormalTok{)}
+\NormalTok{  avg\_populations }\OtherTok{\textless{}{-}}\NormalTok{ (populations[}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{] }\SpecialCharTok{+}\NormalTok{ populations[}\SpecialCharTok{{-}}\FunctionTok{length}\NormalTok{(populations)]) }\SpecialCharTok{/} \DecValTok{2}
+  \FunctionTok{sum}\NormalTok{(time\_intervals }\SpecialCharTok{*}\NormalTok{ avg\_populations)}
+\NormalTok{\}}
+
+\CommentTok{\# Example usage}
+\NormalTok{c\_dates }\OtherTok{\textless{}{-}} \FunctionTok{as.Date}\NormalTok{(}\FunctionTok{date\_decimal}\NormalTok{(year\_starts))}
+\NormalTok{populations }\OtherTok{\textless{}{-}}\NormalTok{ results}
+\end{Highlighting}
+\end{Shaded}
+
+\$E\^{}c\_\{70\} = \$ \texttt{ce\_x(c\_dates,\ populations)}.
+
+\#Estimated force of mortality (census method) As before, force of
+mortality is given by: \[\mu_x = \frac{d_x}{E^c_x}\]
+
+Which translates to: \[\mu_x = \frac{3}{70.5}\]
+
+Therefore: \[\mu_x = 0.04255319\]
+
+\end{document}
