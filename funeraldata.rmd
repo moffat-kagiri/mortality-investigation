@@ -60,6 +60,7 @@ The three dates whose maximum determines the date at which exposure at age 70 be
 - The start of the investigation
 
 The three dates whose minimum determines the date at which exposure at age 70 ends are:
+
 - The date of reaching age label 71
 - The date of exit (for any reason)
 - The end of the investigation
@@ -311,4 +312,5 @@ $$\mu_x = \frac{3}{70.5}$$
 
 Therefore:
 $$\mu_x = 0.04255319$$
+
 
