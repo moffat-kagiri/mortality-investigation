@@ -313,4 +313,92 @@ $$\mu_x = \frac{3}{70.5}$$
 Therefore:
 $$\mu_x = 0.04255319$$
 
+# Calculating $\mu_x$ for All Ages
+
+To find the force of mortality, for all ages, we scale out the functions we used previously for the exact method. 
+
+```{r}
+# Determine exact central exposed to risk for age 70 last birthday. 
+# Define Minimum and maximum ages
+
+mort <- main %>%
+  mutate(
+    BIRTH = as.numeric(BIRTH),
+    entry_date = as.numeric(ENTRY),
+    exit_date  = ifelse(is.na(DEATH), as.numeric(t_5), as.numeric(DEATH)),
+    start_date = as.numeric(t_0),
+    end_date   = as.numeric(t_5)
+  )
+
+# Age at start and at end (in completed years)
+age_at_start <- floor(mort$start_date - mort$BIRTH)
+age_at_end   <- floor(mort$end_date - mort$BIRTH)
+
+min_age <- max(0, min(age_at_start, na.rm = TRUE))
+max_age <- max(age_at_end,   na.rm = TRUE)
+ages <- min_age:max_age
+
+# --- Compute central exposed (E_x^c) by age using person×age expansion ---
+exposure <- mort %>%
+  crossing(age = ages)%>%
+  mutate(
+    bday  = BIRTH + age,
+    bday1 = bday + 1,
+    start = pmax(bday, entry_date, start_date),
+    end   = pmin(bday1, exit_date, end_date),
+    exposure  = as.numeric(end - start),
+    exposure = if_else(exposure < 0, 0, exposure)
+  )
+
+E_by_age <- exposure %>%
+  group_by(age) %>%
+  summarise(E_central = sum(exposure, na.rm = TRUE), .groups = "drop")
+
+
+# Determine age last birthday at death
+deaths_tbl <- main %>%
+  filter(!is.na(DEATH), DEATH >= t_0, DEATH <= t_5) %>%
+  mutate(age_at_death = floor(DEATH - BIRTH)) %>%
+  count(age_at_death, name = "Deaths") %>%
+  rename(age = age_at_death)
+
+# join counts and exposure, fill zeros where missing
+mortality <- tibble(age = ages) %>%
+  left_join(E_by_age, by = "age") %>%
+  left_join(deaths_tbl, by = "age") %>%
+  replace_na(list(E_central = 0, Deaths = 0)) %>%
+  mutate(
+    # central death rate m_x (per year)
+    # eliminate E_c = 0 to avoid division by 0.  
+    m_x = if_else(E_central > 0, Deaths / E_central, NA_real_), 
+    
+    # approx standard error for rate (Poisson approx)
+    se_mx = if_else(E_central > 0, sqrt(Deaths) / E_central, NA_real_),
+
+    # 95% CI on m_x (approx)
+    lower95 = if_else(!is.na(m_x), m_x - 1.96 * se_mx, NA_real_),
+    upper95 = if_else(!is.na(m_x), m_x + 1.96 * se_mx, NA_real_)
+  )
+
+print(mortality)
+
+```
+
+
+Plotting this out on a graph, we get:
+
+```{r}
+ggplot(mortality %>% filter(!is.na(m_x)), aes(x = age, y = m_x)) +
+  geom_ribbon(aes(ymin = lower95, ymax = upper95), alpha = 0.2, fill = "grey70") +
+  geom_point() +
+  geom_line() +
+  labs(x = "Age", y = expression(m[x]~"(per year)"),
+       title = "m_x with approximate 95% CIs") +
+  theme_minimal()
+
+
+```
+
+
+
 
